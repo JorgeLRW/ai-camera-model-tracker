@@ -1,0 +1,87 @@
+import cv2
+import numpy as np
+from OpenGL.GL import *
+from OpenGL.GLU import *
+import pygame as game
+from pygame.locals import *
+import time
+
+class SimpleAvatarSystem:
+    def __init__(self):
+        # Initialize the camera
+        self.camera = cv2.VideoCapture(0)
+        
+        self.quadric = gluNewQuadric()
+
+    def render_cube(self):
+        game.init()
+        screen = game.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
+        game.display.set_caption("3D Cube")
+
+        glEnable(GL_DEPTH_TEST)
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+
+        glMatrixMode(GL_PROJECTION)
+        gluPerspective(45, (800 / 600), 0.1, 50.0)
+        glMatrixMode(GL_MODELVIEW)
+        gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0)
+
+        running = True
+        while running:
+            for event in game.event.get():
+                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_q):
+                    running = False
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+            glLoadIdentity()
+            
+            # Draw a simple cube
+            glBegin(GL_QUADS)
+            glColor3f(1.0, 0.0, 0.0)
+            glVertex3f(-1, -1, 1)
+            glVertex3f(1, -1, 1)
+            glVertex3f(1, 1, 1)
+            glVertex3f(-1, 1, 1)
+
+            glColor3f(0.0, 1.0, 0.0)
+            glVertex3f(-1, -1, -1)
+            glVertex3f(1, -1, -1)
+            glVertex3f(1, 1, -1)
+            glVertex3f(-1, 1, -1)
+
+            glColor3f(0.0, 0.0, 1.0)
+            glVertex3f(-1, -1, -1)
+            glVertex3f(1, -1, -1)
+            glVertex3f(1, -1, 1)
+            glVertex3f(-1, -1, 1)
+
+            glColor3f(1.0, 1.0, 0.0)
+            glVertex3f(-1, 1, -1)
+            glVertex3f(1, 1, -1)
+            glVertex3f(1, 1, 1)
+            glVertex3f(-1, 1, 1)
+
+            glColor3f(1.0, 0.0, 1.0) 
+            glVertex3f(-1, -1, -1)
+            glVertex3f(-1, -1, 1)
+            glVertex3f(-1, 1, 1)
+            glVertex3f(-1, 1, -1)
+
+            glColor3f(0.0, 1.0, 1.0)
+            glVertex3f(1, -1, -1)
+            glVertex3f(1, -1, 1)
+            glVertex3f(1, 1, 1)
+            glVertex3f(1, 1, -1)
+            glEnd()
+
+            game.display.flip()
+            game.time.wait(10)
+
+        game.quit()
+
+    def __del__(self):
+        self.camera.release()
+
+if __name__ == "__main__":
+    avatar_system = SimpleAvatarSystem()
+    avatar_system.render_cube()
